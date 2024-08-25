@@ -4,6 +4,8 @@ import 'package:classroom/register.dart';
 import './classPage.dart'; // Import the ClassesPage
 
 class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -22,7 +24,7 @@ class _SignInPageState extends State<SignInPage> {
       // Navigate to the ClassesPage after successful sign-in
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ClassesPage()),
+        MaterialPageRoute(builder: (context) => const ClassesPage()),
       );
     } catch (e) {
       print('Sign In Error: $e');
@@ -36,7 +38,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: const Text('Sign In'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -45,7 +47,7 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
@@ -53,10 +55,10 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
@@ -65,25 +67,25 @@ class _SignInPageState extends State<SignInPage> {
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _signIn, // Call the _signIn function
-              child: Text('Sign In'),
+              onPressed: _signIn,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
-                padding: EdgeInsets.all(10),
-                textStyle: TextStyle(fontSize: 18),
-              ),
+                padding: const EdgeInsets.all(10),
+                textStyle: const TextStyle(fontSize: 18),
+              ), // Call the _signIn function
+              child: const Text('Sign In'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
               },
-              child: Text('Don\'t have an account? Register here'),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.deepPurple,
               ),
+              child: const Text('Don\'t have an account? Register here'),
             ),
           ],
         ),

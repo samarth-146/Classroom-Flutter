@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import './createClass.dart';
 
 class ClassroomApp extends StatelessWidget {
+  const ClassroomApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,7 +12,7 @@ class ClassroomApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
       ),
-      home: ClassesPage(),
+      home: const ClassesPage(),
     );
   }
 }
@@ -23,16 +25,18 @@ class ClassesPage extends StatelessWidget {
     Class(name: 'Biology 401', teacher: 'Dr. Kharec', time: '12:00 PM - 1:00 PM', icon: Icons.biotech),
   ];
 
+  const ClassesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Classes'),
+        title: const Text('Your Classes'),
         centerTitle: true,
         backgroundColor: Colors.indigo[600],
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();  // Open the drawer when the icon is pressed
             },
@@ -47,7 +51,7 @@ class ClassesPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.indigo[600],
               ),
-              child: Text(
+              child: const Text(
                 'Menu',
                 style: TextStyle(
                   color: Colors.white,
@@ -56,22 +60,22 @@ class ClassesPage extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
               onTap: () {
                 // Handle the tap
               },
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
               onTap: () {
                 // Handle the tap
               },
             ),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text('About'),
+              leading: const Icon(Icons.info),
+              title: const Text('About'),
               onTap: () {
                 // Handle the tap
               },
@@ -89,11 +93,11 @@ class ClassesPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ClassCreationPage()),
+            MaterialPageRoute(builder: (context) => const ClassCreationPage()),
           );
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.blueAccent,
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -102,7 +106,7 @@ class ClassesPage extends StatelessWidget {
 class ClassCard extends StatelessWidget {
   final Class classInfo;
 
-  const ClassCard({required this.classInfo});
+  const ClassCard({super.key, required this.classInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +115,10 @@ class ClassCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.0),
       ),
       color: Colors.blueAccent.shade100,
-      margin: EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(10.0),
       elevation: 5.0,
       child: Padding(
-        padding: EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(15.0),
         child: Row(
           children: <Widget>[
             Icon(
@@ -122,31 +126,31 @@ class ClassCard extends StatelessWidget {
               size: 50.0,
               color: Colors.white,
             ),
-            SizedBox(width: 20.0),
+            const SizedBox(width: 20.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     classInfo.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 22.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                   Text(
                     'Teacher: ${classInfo.teacher}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.white70,
                     ),
                   ),
-                  SizedBox(height: 5.0),
+                  const SizedBox(height: 5.0),
                   Text(
                     'Time: ${classInfo.time}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.white70,
                     ),

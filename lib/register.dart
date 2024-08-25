@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import './classPage.dart'; // Import the ClassesPage
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -21,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // Navigate to the ClassesPage after successful registration
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ClassesPage()),
+        MaterialPageRoute(builder: (context) => const ClassesPage()),
       );
     } catch (e) {
       print('Registration Error: $e');
@@ -35,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -44,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
@@ -52,10 +54,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
@@ -64,15 +66,15 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _register, // Call the _register function
-              child: Text('Register'),
+              onPressed: _register,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.deepPurple,
-                padding: EdgeInsets.all(10),
-                textStyle: TextStyle(fontSize: 18),
-              ),
+                padding: const EdgeInsets.all(10),
+                textStyle: const TextStyle(fontSize: 18),
+              ), // Call the _register function
+              child: const Text('Register'),
             ),
           ],
         ),

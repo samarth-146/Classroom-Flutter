@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ClassCreationPage extends StatefulWidget {
+  const ClassCreationPage({super.key});
+
   @override
   _ClassCreationPageState createState() => _ClassCreationPageState();
 }
@@ -26,7 +28,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
 
     if (className.isEmpty || subject.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all fields')),
+        const SnackBar(content: Text('Please fill in all fields')),
       );
       return;
     }
@@ -40,7 +42,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
         'createdAt': FieldValue.serverTimestamp(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Class created successfully')),
+        const SnackBar(content: Text('Class created successfully')),
       );
       // Optionally navigate to another page or clear the form
       Navigator.pop(context); // Go back to the previous page or navigate as needed
@@ -56,7 +58,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Class'),
+        title: const Text('Create Class'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -65,28 +67,28 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
           children: [
             TextField(
               controller: _classNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Class Name',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _subjectController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Subject',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _createClass,
-              child: Text('Create Class'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
-                padding: EdgeInsets.all(10),
-                textStyle: TextStyle(fontSize: 18),
+                padding: const EdgeInsets.all(10),
+                textStyle: const TextStyle(fontSize: 18),
               ),
+              child: const Text('Create Class'),
             ),
           ],
         ),
