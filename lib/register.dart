@@ -23,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // Navigate to the ClassesPage after successful registration
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ClassesPage()),
+        MaterialPageRoute(builder: (context) =>  UserClassesPage()),
       );
     } catch (e) {
       print('Registration Error: $e');

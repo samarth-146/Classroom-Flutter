@@ -1,175 +1,124 @@
 import 'package:flutter/material.dart';
-import './createClass.dart';
-
-class ClassroomApp extends StatelessWidget {
-  const ClassroomApp({super.key});
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'createClass.dart';
+class UserClassesPage extends StatefulWidget {
+  const UserClassesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Classroom App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Roboto',
-      ),
-      home: const ClassesPage(),
-    );
-  }
+  _UserClassesPageState createState() => _UserClassesPageState();
 }
 
-class ClassesPage extends StatelessWidget {
-  final List<Class> classes = [
-    Class(name: 'Math 101', teacher: 'Mr. Smith', time: '9:00 AM - 10:00 AM', icon: Icons.calculate),
-    Class(name: 'Physics 201', teacher: 'Ms. Johnson', time: '10:30 AM - 11:30 AM', icon: Icons.science),
-    Class(name: 'Chemistry 301', teacher: 'Dr. Brown', time: '12:00 PM - 1:00 PM', icon: Icons.egg_outlined),
-    Class(name: 'Biology 401', teacher: 'Dr. Kharec', time: '12:00 PM - 1:00 PM', icon: Icons.biotech),
-  ];
+class _UserClassesPageState extends State<UserClassesPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  const ClassesPage({super.key});
+  void _navigateToCreateClassPage() {
+    // Replace with your navigation logic to the create class page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ClassCreationPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Classes'),
-        centerTitle: true,
-        backgroundColor: Colors.indigo[600],
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();  // Open the drawer when the icon is pressed
-            },
-          ),
-        ),
+        title: const Text('My Classes'),
+        backgroundColor: Colors.deepPurple,
+        elevation: 0,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.indigo[600],
-              ),
-              child: const Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore
+            .collection('classes')
+            .where('userId', isEqualTo: _auth.currentUser!.uid)
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No classes found.'));
+          }
+
+          final classes = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: classes.length,
+            itemBuilder: (context, index) {
+              final classData = classes[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                // Handle the tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {
-                // Handle the tap
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About'),
-              onTap: () {
-                // Handle the tap
-              },
-            ),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: classes.length,
-        itemBuilder: (context, index) {
-          return ClassCard(classInfo: classes[index]);
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade400],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          classData['className'],
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Subject: ${classData['subject']}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Class Code: ${classData['classCode']}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Created at: ${classData['createdAt'] != null ? (classData['createdAt'] as Timestamp).toDate().toString() : 'N/A'}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white60,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ClassCreationPage()),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ClassCreationPage()));
         },
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.deepPurple,
         child: const Icon(Icons.add),
       ),
     );
   }
-}
-
-class ClassCard extends StatelessWidget {
-  final Class classInfo;
-
-  const ClassCard({super.key, required this.classInfo});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      color: Colors.blueAccent.shade100,
-      margin: const EdgeInsets.all(10.0),
-      elevation: 5.0,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          children: <Widget>[
-            Icon(
-              classInfo.icon,
-              size: 50.0,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 20.0),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    classInfo.name,
-                    style: const TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    'Teacher: ${classInfo.teacher}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white70,
-                    ),
-                  ),
-                  const SizedBox(height: 5.0),
-                  Text(
-                    'Time: ${classInfo.time}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Class {
-  final String name;
-  final String teacher;
-  final String time;
-  final IconData icon;
-
-  Class({required this.name, required this.teacher, required this.time, required this.icon});
 }

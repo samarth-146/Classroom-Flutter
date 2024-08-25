@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math'; // For random class code generation
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'classPage.dart';
 
 class ClassCreationPage extends StatefulWidget {
   const ClassCreationPage({super.key});
@@ -44,8 +45,11 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Class created successfully')),
       );
-      // Optionally navigate to another page or clear the form
-      Navigator.pop(context); // Go back to the previous page or navigate as needed
+      // Navigate to UserClassesPage after successful creation
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const UserClassesPage()),
+      );
     } catch (e) {
       print('Error creating class: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +68,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _classNameController,

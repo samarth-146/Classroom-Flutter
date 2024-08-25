@@ -24,7 +24,7 @@ class _SignInPageState extends State<SignInPage> {
       // Navigate to the ClassesPage after successful sign-in
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ClassesPage()),
+        MaterialPageRoute(builder: (context) =>  UserClassesPage()),
       );
     } catch (e) {
       print('Sign In Error: $e');
