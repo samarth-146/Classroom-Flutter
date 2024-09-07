@@ -41,6 +41,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
         'subject': subject,
         'classCode': classCode,
         'createdAt': FieldValue.serverTimestamp(),
+        'joinedUser': [],  // Initialize with an empty list
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Class created successfully')),
@@ -57,6 +58,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
