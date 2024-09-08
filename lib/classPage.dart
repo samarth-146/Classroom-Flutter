@@ -3,8 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'createClass.dart';
 import 'joinClassroomPage.dart';
-import 'signin.dart';  // Import the sign-in page
-import 'register.dart'; // Import the register page
+import 'signin.dart';
+import 'register.dart';
+import 'classDetailsPage.dart'; // Import the new class details page
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -17,6 +18,16 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late TabController _tabController;
+
+  // Define an array of distinct colors
+  final List<Color> cardColors = [
+    Colors.purple.shade100,
+    Colors.lime.shade200,
+    Colors.blueGrey.shade300,
+    Colors.cyan.shade100,
+    Colors.yellow.shade200,
+    Colors.lightGreen.shade300,
+  ];
 
   @override
   void initState() {
@@ -76,60 +87,74 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
           itemCount: classes.length,
           itemBuilder: (context, index) {
             final classData = classes[index];
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepPurple.shade100, Colors.deepPurple.shade400],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+
+            // Assign a color based on the index by cycling through cardColors
+            final assignedColor = cardColors[index % cardColors.length];
+
+            return GestureDetector(
+              onTap: () {
+                // Navigate to the ClassDetailsPage when the card is tapped
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClassDetailsPage(
+                      classId: classData.id, // Pass the class ID
+                      classData: classData,  // Pass the class data
+                    ),
                   ),
+                );
+              },
+              child: Card(
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                elevation: 8,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        classData['className'],
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: assignedColor, // Use the assigned color for the card
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          classData['className'],
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Subject: ${classData['subject']}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white70,
+                        const SizedBox(height: 10),
+                        Text(
+                          'Subject: ${classData['subject']}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Class Code: ${classData['classCode']}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                          fontStyle: FontStyle.italic,
+                        const SizedBox(height: 5),
+                        Text(
+                          'Class Code: ${classData['classCode']}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Created at: ${classData['createdAt'] != null ? (classData['createdAt'] as Timestamp).toDate().toString() : 'N/A'}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white60,
+                        const SizedBox(height: 10),
+                        Text(
+                          'Created at: ${classData['createdAt'] != null ? (classData['createdAt'] as Timestamp).toDate().toString() : 'N/A'}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -145,7 +170,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Classes'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.blueGrey[400],
         elevation: 0,
         actions: [
           IconButton(
@@ -204,7 +229,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateClassPage,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.green.shade400,
         child: const Icon(Icons.add),
       ),
     );
