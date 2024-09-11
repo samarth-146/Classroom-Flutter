@@ -15,13 +15,12 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
   final TextEditingController _classNameController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
 
-  // Generate a random class code
+
   String _generateClassCode() {
     final random = Random();
     return 'CLASS${random.nextInt(10000).toString().padLeft(4, '0')}'; // Example format: CLASS1234
   }
 
-  // Create a new class document in Firestore
   void _createClass() async {
     final String className = _classNameController.text.trim();
     final String subject = _subjectController.text.trim();
@@ -41,12 +40,12 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
         'subject': subject,
         'classCode': classCode,
         'createdAt': FieldValue.serverTimestamp(),
-        'joinedUser': [],  // Initialize with an empty list
+        'joinedUser': [],
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Class created successfully')),
       );
-      // Navigate to UserClassesPage after successful creation
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const UserClassesPage()),

@@ -5,7 +5,7 @@ import 'createClass.dart';
 import 'joinClassroomPage.dart';
 import 'signin.dart';
 import 'register.dart';
-import 'classDetailsPage.dart'; // Import the new class details page
+import 'classDetailsPage.dart';
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -17,9 +17,9 @@ class UserClassesPage extends StatefulWidget {
 class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  late TabController _tabController;
+  late TabController _tabController;//used for controller tab between created class and joined class
 
-  // Define an array of distinct colors
+  // array of distinct color for card colors
   final List<Color> cardColors = [
     Colors.purple.shade100,
     Colors.lime.shade200,
@@ -65,9 +65,12 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
     );
   }
 
+  //if we remove the class or add the class then Stream detect all the changes and rebuid the UI
+  //QuerySnapshot represents the result of a query made to Firestore
   Widget _buildClassList(Stream<QuerySnapshot> classStream) {
     return StreamBuilder<QuerySnapshot>(
       stream: classStream,
+      //snapshot use-->the stream is still waiting for data, has data, or encountered an error
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -83,17 +86,19 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
 
         final classes = snapshot.data!.docs;
 
+        //ListView.builder in Flutter is a constructor used to build a scrollable list of widgets
         return ListView.builder(
           itemCount: classes.length,
           itemBuilder: (context, index) {
             final classData = classes[index];
 
-            // Assign a color based on the index by cycling through cardColors
             final assignedColor = cardColors[index % cardColors.length];
 
             return GestureDetector(
+
+              //onTap,onDoubleTap,onLongPress,onPanUpdate,onTapDown....
               onTap: () {
-                // Navigate to the ClassDetailsPage when the card is tapped
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -174,7 +179,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.login),
+            icon: const Icon(Icons.add_box_rounded),
             onPressed: _navigateToJoinClassPage,
             tooltip: 'Join Classroom',
           ),
@@ -182,19 +187,20 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
             onSelected: (value) {
               if (value == 'logout') {
                 _logout();
-              } else if (value == 'register') {
-                _navigateToRegisterPage();
               }
+              // else if (value == 'register') {
+              //   _navigateToRegisterPage();
+              // }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'logout',
                 child: Text('Logout'),
               ),
-              const PopupMenuItem(
-                value: 'register',
-                child: Text('Register'),
-              ),
+              // const PopupMenuItem(
+              //   value: 'register',
+              //   child: Text('Register'),
+              // ),
             ],
           ),
         ],
@@ -230,7 +236,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateClassPage,
         backgroundColor: Colors.green.shade400,
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.create_outlined),
       ),
     );
   }

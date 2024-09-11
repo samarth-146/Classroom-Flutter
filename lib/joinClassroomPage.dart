@@ -24,7 +24,7 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
     }
 
     try {
-      // Find the class by class code
+
       final classQuery = await FirebaseFirestore.instance
           .collection('classes')
           .where('classCode', isEqualTo: classCode)
@@ -41,7 +41,15 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
       final classDoc = classQuery.docs.first;
       final classRef = classDoc.reference;
 
-      // Add userId to the joinedUser field
+
+      if (classDoc['userId'] == userId) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You cannot join your own class')),
+        );
+        return;
+      }
+
+
       await classRef.update({
         'joinedUser': FieldValue.arrayUnion([userId]),
       });
