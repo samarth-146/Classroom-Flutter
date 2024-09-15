@@ -10,6 +10,7 @@ Future<void> main() async {
   appId: "1:955268353153:android:4ccbef227699eb50899180",
   messagingSenderId: "955268353153",
   projectId: "classroom-949b3",
+  storageBucket: "gs://classroom-949b3.appspot.com"
   ));
   runApp(const MyApp());
 }

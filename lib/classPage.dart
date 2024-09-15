@@ -6,6 +6,7 @@ import 'joinClassroomPage.dart';
 import 'signin.dart';
 import 'register.dart';
 import 'classDetailsPage.dart';
+import 'package:classroom/ClassInfo.dart';
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -18,6 +19,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late TabController _tabController;//used for controller tab between created class and joined class
+
 
   // array of distinct color for card colors
   final List<Color> cardColors = [
@@ -91,6 +93,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
           itemCount: classes.length,
           itemBuilder: (context, index) {
             final classData = classes[index];
+            final data = classData.data() as Map<String, dynamic>;
 
             final assignedColor = cardColors[index % cardColors.length];
 
@@ -102,9 +105,11 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+
                     builder: (context) => ClassDetailsPage(
                       classId: classData.id, // Pass the class ID
-                      classData: classData,  // Pass the class data
+                      classData: classData,
+                      currentUserId: data['id'], // Pass the class data,  // Pass the class data
                     ),
                   ),
                 );
