@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:classroom/UploadInfoPage.dart'; // Import the UploadInfoPage
 import 'package:classroom/ClassInfo.dart'; // Import the ClassInfoPage
 import 'pdf_viewer_page.dart'; // Import the PDFViewerPage
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth to get the current user
+
 
 class ClassDetailsPage extends StatelessWidget {
   final String classId;
@@ -122,21 +124,26 @@ class ClassDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    final classCreatorId = classData['userId'];
     return Scaffold(
       appBar: AppBar(
         title: Text(classData['className']),
         backgroundColor: Colors.blueGrey[400],
         actions: [
-          IconButton(
-            icon: Icon(Icons.upload_file),
-            onPressed: () => _goToUploadInfoPage(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.delete_forever),
-            onPressed: () => _deleteClass(context), // Delete class button
-          ),
+          if (currentUserId == classCreatorId) ...[
+            IconButton(
+              icon: Icon(Icons.upload_file),
+              onPressed: () => _goToUploadInfoPage(context),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: () => _deleteClass(context),
+            ),
+          ]
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -233,6 +240,7 @@ class ClassDetailsPage extends StatelessWidget {
                                         'Uploaded on: ${(info['createdAt'] as Timestamp).toDate()}',
                                         style: const TextStyle(fontSize: 12, color: Colors.grey),
                                       ),
+                                      if (currentUserId == classCreatorId)
                                       IconButton(
                                         icon: const Icon(Icons.delete, color: Colors.red),
                                         onPressed: () => _deleteInfo(context, infoId),
