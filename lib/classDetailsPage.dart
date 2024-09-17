@@ -46,9 +46,7 @@ class ClassDetailsPage extends StatelessWidget {
 
   Future<void> _deleteInfo(BuildContext context, String infoId) async {
     final currentUserRole = await _getCurrentUserRole();
-
-    if (currentUserRole == 'admin' || currentUserRole == 'creator') {
-      try {
+     try {
         await FirebaseFirestore.instance
             .collection('classes')
             .doc(classId)
@@ -63,17 +61,11 @@ class ClassDetailsPage extends StatelessWidget {
           SnackBar(content: Text('Failed to delete information: $e')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You do not have permission to delete this information')),
-      );
-    }
+
   }
 
   Future<void> _deleteClass(BuildContext context) async {
     final currentUserRole = await _getCurrentUserRole();
-
-    if (currentUserRole == 'admin' || currentUserRole == 'creator') {
       try {
         await FirebaseFirestore.instance
             .collection('classes')
@@ -88,11 +80,6 @@ class ClassDetailsPage extends StatelessWidget {
           SnackBar(content: Text('Failed to delete class: $e')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You do not have permission to delete this class')),
-      );
-    }
   }
 
   Future<String> _getCurrentUserRole() async {
