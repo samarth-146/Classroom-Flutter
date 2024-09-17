@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'classDetailsPage.dart';
 
 class ClassInfoPage extends StatefulWidget {
   final DocumentSnapshot infoData;
@@ -21,11 +22,14 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
   PlatformFile? _selectedFile;
   String? _currentUserId;
   bool _isCreator = false;
+  bool _hasUploadedPdf = false; // To track if the user has uploaded a PDF
+  String? _uploadedPdfUrl; // Store the user's uploaded PDF URL
 
   @override
   void initState() {
     super.initState();
     _fetchCurrentUserId();
+    _checkUploadedPdf();
   }
 
   Future<void> _fetchCurrentUserId() async {
@@ -33,7 +37,24 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     if (currentUser != null) {
       setState(() {
         _currentUserId = currentUser.uid;
-        _isCreator = widget.userId == _currentUserId; // Check if the current user is the creator
+        _isCreator = widget.userId == _currentUserId;
+      });
+    }
+  }
+
+  Future<void> _checkUploadedPdf() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('classes')
+        .doc(widget.infoData.reference.parent.parent!.id)
+        .collection('info')
+        .doc(widget.infoData.id)
+        .get();
+
+    final Map<String, dynamic>? data = userDoc.data();
+    if (data != null && data.containsKey('submittedPdf')) {
+      setState(() {
+        _hasUploadedPdf = true;
+        _uploadedPdfUrl = data['submittedPdf'];
       });
     }
   }
@@ -59,7 +80,9 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
 
     try {
       final file = File(_selectedFile!.path!);
-      final storageRef = FirebaseStorage.instance.ref().child('pdfs/${widget.infoData.id}/${_selectedFile!.name}');
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('pdfs/${widget.infoData.id}/${_selectedFile!.name}');
       final uploadTask = storageRef.putFile(file);
       final snapshot = await uploadTask.whenComplete(() => {});
       final pdfUrl = await snapshot.ref.getDownloadURL();
@@ -71,14 +94,44 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
           .doc(widget.infoData.id)
           .update({'submittedPdf': pdfUrl});
 
+      setState(() {
+        _hasUploadedPdf = true;
+        _uploadedPdfUrl = pdfUrl;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('PDF submitted successfully')),
       );
-
-      Navigator.popUntil(context, ModalRoute.withName('/classDetails'));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to submit PDF: $e')),
+      );
+    }
+  }
+
+  Future<void> _deletePdf() async {
+    try {
+      final storageRef = FirebaseStorage.instance.refFromURL(_uploadedPdfUrl!);
+      await storageRef.delete();
+
+      await FirebaseFirestore.instance
+          .collection('classes')
+          .doc(widget.infoData.reference.parent.parent!.id)
+          .collection('info')
+          .doc(widget.infoData.id)
+          .update({'submittedPdf': FieldValue.delete()});
+
+      setState(() {
+        _hasUploadedPdf = false;
+        _uploadedPdfUrl = null;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDF deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete PDF: $e')),
       );
     }
   }
@@ -93,26 +146,9 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
     }
   }
 
-  DateTime? _parseDueDate(dynamic dueDate) {
-    if (dueDate is Timestamp) {
-      return dueDate.toDate();
-    } else if (dueDate is String) {
-      try {
-        return DateTime.parse(dueDate);
-      } catch (e) {
-        print('Failed to parse dueDate string: $e');
-        return null;
-      }
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final infoData = widget.infoData.data() as Map<String, dynamic>?;
-
-    final dueDate = _parseDueDate(infoData?['dueDate']);
-    final isLate = dueDate != null && DateTime.now().isAfter(dueDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -134,24 +170,13 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
               style: TextStyle(fontSize: 18, color: Colors.blueGrey[600]),
             ),
             const SizedBox(height: 16),
-            if (infoData?['pdfUrl'] != null)
+            if (_uploadedPdfUrl != null)
               ElevatedButton(
-                onPressed: () => _openPDF(infoData!['pdfUrl']),
-                child: const Text('Open PDF'),
+                onPressed: () => _openPDF(_uploadedPdfUrl!),
+                child: const Text('Open Submitted PDF'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
               ),
-            if (dueDate != null) ...[
-              const SizedBox(height: 16),
-              Text(
-                'Due Date: ${DateFormat('yyyy-MM-dd').format(dueDate)}',
-                style: TextStyle(fontSize: 16, color: isLate ? Colors.red : Colors.green),
-              ),
-              Text(
-                isLate ? 'Late' : 'On Time',
-                style: TextStyle(fontSize: 16, color: isLate ? Colors.red : Colors.green),
-              ),
-            ],
-            if (!_isCreator) ...[
+            if (!_isCreator && !_hasUploadedPdf) ...[
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _pickFile,
@@ -162,6 +187,13 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
                 onPressed: _submitPdf,
                 child: const Text('Submit PDF'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
+              ),
+            ] else if (!_isCreator && _hasUploadedPdf) ...[
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _deletePdf,
+                child: const Text('Delete Submitted PDF'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               ),
             ],
           ],
