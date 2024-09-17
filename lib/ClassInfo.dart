@@ -140,12 +140,6 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
                 child: const Text('Open PDF'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
               ),
-            if (infoData?['submittedPdf'] != null)
-              ElevatedButton(
-                onPressed: () => _openPDF(infoData!['submittedPdf']),
-                child: const Text('View Submitted PDF'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
-              ),
             if (dueDate != null) ...[
               const SizedBox(height: 16),
               Text(
