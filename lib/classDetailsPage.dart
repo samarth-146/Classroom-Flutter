@@ -5,11 +5,10 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:classroom/UploadInfoPage.dart'; // Import the UploadInfoPage
-import 'package:classroom/ClassInfo.dart'; // Import the ClassInfoPage
-import 'pdf_viewer_page.dart'; // Import the PDFViewerPage
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth to get the current user
-
+import 'package:classroom/UploadInfoPage.dart';
+import 'package:classroom/ClassInfo.dart';
+import 'pdf_viewer_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ClassDetailsPage extends StatelessWidget {
   final String classId;
@@ -80,7 +79,7 @@ class ClassDetailsPage extends StatelessWidget {
             .collection('classes')
             .doc(classId)
             .delete();
-        Navigator.pop(context); // Navigate back after deleting the class
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Class deleted successfully')),
         );
@@ -97,9 +96,13 @@ class ClassDetailsPage extends StatelessWidget {
   }
 
   Future<String> _getCurrentUserRole() async {
-    // Implement your logic to get the current user's role
-    // This is just a placeholder
-    return 'creator'; // Replace with actual logic to fetch user role
+    try {
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+      return userDoc['role'] as String;
+    } catch (e) {
+      print('Error fetching user role: $e');
+      return 'guest'; // Default or error role
+    }
   }
 
   void _goToUploadInfoPage(BuildContext context) async {
@@ -118,7 +121,7 @@ class ClassDetailsPage extends StatelessWidget {
   void _goToClassInfoPage(BuildContext context, DocumentSnapshot infoData) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ClassInfoPage(infoData: infoData)),
+      MaterialPageRoute(builder: (context) => ClassInfoPage(infoData: infoData, userId: classData['userId'])),
     );
   }
 
@@ -143,7 +146,6 @@ class ClassDetailsPage extends StatelessWidget {
           ]
         ],
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -192,7 +194,9 @@ class ClassDetailsPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final info = infoDocs[index];
                       final Map<String, dynamic>? data = info.data() as Map<String, dynamic>?;
+
                       final pdfUrl = data != null && data.containsKey('pdfUrl') ? data['pdfUrl'] as String? : null;
+                      final submittedPdf = data != null && data.containsKey('submittedPdf') ? data['submittedPdf'] as String? : null;
                       final infoId = info.id;
 
                       return Card(
@@ -232,6 +236,15 @@ class ClassDetailsPage extends StatelessWidget {
                                       backgroundColor: Colors.blueGrey,
                                     ),
                                   ),
+                                if (submittedPdf != null && submittedPdf.isNotEmpty)
+                                  ElevatedButton.icon(
+                                    onPressed: () => _openPDF(context, submittedPdf),
+                                    icon: const Icon(Icons.picture_as_pdf),
+                                    label: const Text('View Submitted PDF'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blueGrey,
+                                    ),
+                                  ),
                                 Align(
                                   alignment: Alignment.bottomRight,
                                   child: Row(
@@ -241,10 +254,10 @@ class ClassDetailsPage extends StatelessWidget {
                                         style: const TextStyle(fontSize: 12, color: Colors.grey),
                                       ),
                                       if (currentUserId == classCreatorId)
-                                      IconButton(
-                                        icon: const Icon(Icons.delete, color: Colors.red),
-                                        onPressed: () => _deleteInfo(context, infoId),
-                                      ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          onPressed: () => _deleteInfo(context, infoId),
+                                        ),
                                     ],
                                   ),
                                 ),

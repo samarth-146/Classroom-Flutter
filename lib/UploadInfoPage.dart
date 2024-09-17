@@ -16,6 +16,7 @@ class UploadInfoPage extends StatefulWidget {
 class _UploadInfoPageState extends State<UploadInfoPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController dueDateController = TextEditingController();
   PlatformFile? _selectedFile;
 
   Future<void> _pickFile() async {
@@ -44,6 +45,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
   Future<void> _uploadInfo() async {
     final title = titleController.text.trim();
     final description = descriptionController.text.trim();
+    final dueDate = dueDateController.text.trim();
 
     if (title.isEmpty || description.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,17 +73,25 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
         pdfUrl = await storageRef.getDownloadURL();
       }
 
+      // Prepare data to store in Firestore
+      Map<String, dynamic> data = {
+        'title': title,
+        'description': description,
+        'createdAt': Timestamp.now(),
+        'pdfUrl': pdfUrl, // Save the URL of the uploaded PDF if available
+      };
+
+      // Add due date if it's not empty
+      if (dueDate.isNotEmpty) {
+        data['dueDate'] = dueDate;
+      }
+
       // Store the info in Firestore
       await FirebaseFirestore.instance
           .collection('classes')
           .doc(widget.classId)
           .collection('info')
-          .add({
-        'title': title,
-        'description': description,
-        'createdAt': Timestamp.now(),
-        'pdfUrl': pdfUrl, // Save the URL of the uploaded PDF if available
-      });
+          .add(data);
 
       // Pop the page and pass a success flag back
       Navigator.pop(context, true);
@@ -99,7 +109,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
         title: const Text('Upload Information'),
         backgroundColor: Colors.blueGrey[400],
       ),
-      body: Padding(
+      body: SingleChildScrollView(  // Wrap the Column in a scrollable view
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -112,6 +122,10 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
               decoration: const InputDecoration(labelText: 'Description'),
               maxLines: 5,
             ),
+            // TextField(
+            //   controller: dueDateController,
+            //   decoration: const InputDecoration(labelText: 'Due Date (optional)'),
+            // ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: _pickFile,
