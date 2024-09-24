@@ -23,7 +23,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf'],
+        allowedExtensions: ['pdf','zip'],
       );
 
       if (result != null && result.files.isNotEmpty) {
@@ -81,10 +81,6 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
         'pdfUrl': pdfUrl, // Save the URL of the uploaded PDF if available
       };
 
-      // Add due date if it's not empty
-      if (dueDate.isNotEmpty) {
-        data['dueDate'] = dueDate;
-      }
 
       // Store the info in Firestore
       await FirebaseFirestore.instance
@@ -122,11 +118,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
               decoration: const InputDecoration(labelText: 'Description'),
               maxLines: 5,
             ),
-            // TextField(
-            //   controller: dueDateController,
-            //   decoration: const InputDecoration(labelText: 'Due Date (optional)'),
-            // ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: _pickFile,
               icon: const Icon(Icons.attach_file),
