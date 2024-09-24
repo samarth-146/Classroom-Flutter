@@ -13,10 +13,13 @@ class ClassDetailsPage extends StatelessWidget {
   final String classId;
   final DocumentSnapshot classData;
 
+
+
   const ClassDetailsPage({
     Key? key,
     required this.classId,
-    required this.classData, required currentUserId,
+    required this.classData,
+    required currentUserId,
   }) : super(key: key);
 
   Future<File> _downloadPDF(String pdfUrl) async {
@@ -26,8 +29,61 @@ class ClassDetailsPage extends StatelessWidget {
     await file.writeAsBytes(response.bodyBytes);
     return file;
   }
-  // Inside ClassDetailsPage class
+  Future<void> _assignGrade(BuildContext context, String infoId) async {
+    final TextEditingController gradeController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Assign Grade'),
+          content: TextField(
+            controller: gradeController,
+            decoration: InputDecoration(labelText: 'Enter Grade'),
+            keyboardType: TextInputType.number,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final grade = gradeController.text;
+                print(grade);
+                print(infoId);
+                if (grade.isNotEmpty) {
+                  await _updateGrade(infoId, grade);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Grade assigned successfully')),
+                  );
+                }
+              },
+              child: Text('Assign'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  Future<void> _updateGrade(String infoId, String grade) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('classes')
+          .doc(classId)
+          .collection('info')
+          .doc(infoId)
+          .update({
+        'grade': grade,
+
+      });
+    } catch (e) {
+      print('Failed to update grade: $e');
+    }
+  }
 
 
   void _openPDF(BuildContext context, String pdfUrl) async {
@@ -223,7 +279,7 @@ class ClassDetailsPage extends StatelessWidget {
                                     icon: const Icon(Icons.picture_as_pdf),
                                     label: const Text('Open PDF'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blueGrey,
+                                      backgroundColor: Colors.blueGrey[200],
                                     ),
                                   ),
                                 if (submittedPdf != null && submittedPdf.isNotEmpty)
@@ -232,7 +288,7 @@ class ClassDetailsPage extends StatelessWidget {
                                     icon: const Icon(Icons.picture_as_pdf),
                                     label: const Text('View Submitted PDF'),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blueGrey,
+                                      backgroundColor: Colors.blueGrey[200],
                                     ),
                                   ),
                                 Align(
@@ -244,10 +300,12 @@ class ClassDetailsPage extends StatelessWidget {
                                         style: const TextStyle(fontSize: 12, color: Colors.grey),
                                       ),
                                       if (currentUserId == classCreatorId)
-                                        IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.red),
-                                          onPressed: () => _deleteInfo(context, infoId),
-                                        ),
+                                        Row(
+                                          children: [
+                                            IconButton(onPressed: ()=>_deleteInfo(context,infoId),icon: const Icon(Icons.delete,color: Colors.red)),
+                                            IconButton(onPressed: ()=>_assignGrade(context,infoId), icon: Icon(Icons.grade,color: Colors.green))
+                                          ],
+                                        )
                                     ],
                                   ),
                                 ),

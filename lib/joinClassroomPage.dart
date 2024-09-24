@@ -24,7 +24,6 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
     }
 
     try {
-
       final classQuery = await FirebaseFirestore.instance
           .collection('classes')
           .where('classCode', isEqualTo: classCode)
@@ -41,14 +40,12 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
       final classDoc = classQuery.docs.first;
       final classRef = classDoc.reference;
 
-
       if (classDoc['userId'] == userId) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('You cannot join your own class')),
         );
         return;
       }
-
 
       await classRef.update({
         'joinedUser': FieldValue.arrayUnion([userId]),
@@ -71,31 +68,77 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Join Classroom'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.blueGrey[500],
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _classCodeController,
-              decoration: const InputDecoration(
-                labelText: 'Class Code',
-                border: OutlineInputBorder(),
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20.0),
+        color: Colors.grey[100], // Simple background color
+        child: Center(
+          child: SingleChildScrollView(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              elevation: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Enter Class Code',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _classCodeController,
+                      decoration: InputDecoration(
+                        labelText: 'Class Code',
+                        labelStyle: const TextStyle(color: Colors.deepPurple),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.deepPurpleAccent,
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton.icon(
+                      onPressed: _joinClass,
+                      icon: const Icon(Icons.class_),
+                      label: const Text('Join Class'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15.0,
+                          horizontal: 20.0,
+                        ),
+                        textStyle: const TextStyle(fontSize: 20),
+                        backgroundColor: Colors.blueGrey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _joinClass,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.all(10),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text('Join Class'),
-            ),
-          ],
+          ),
         ),
       ),
     );

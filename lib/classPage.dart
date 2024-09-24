@@ -79,7 +79,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
           itemBuilder: (context, index) {
             final classData = classes[index];
             final data = classData.data() as Map<String, dynamic>;
-
+            final currentUserId = data.containsKey('userId') ? data['userId'] : null;
             final assignedColor = cardColors[index % cardColors.length];
 
             return GestureDetector(
@@ -90,7 +90,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                     builder: (context) => ClassDetailsPage(
                       classId: classData.id,
                       classData: classData,
-                      currentUserId: data['id'],
+                      currentUserId: currentUserId,
                     ),
                   ),
                 );
