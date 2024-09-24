@@ -4,7 +4,7 @@
     <application
         android:label="classroom"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/img">
         <activity
             android:name=".MainActivity"
             android:exported="true"

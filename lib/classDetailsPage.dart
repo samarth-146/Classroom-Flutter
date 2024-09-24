@@ -7,19 +7,15 @@ import 'package:classroom/UploadInfoPage.dart';
 import 'package:classroom/ClassInfo.dart';
 import 'pdf_viewer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'grade_service.dart';
 
 class ClassDetailsPage extends StatelessWidget {
   final String classId;
   final DocumentSnapshot classData;
 
-
-
   const ClassDetailsPage({
     Key? key,
     required this.classId,
-    required this.classData,
-    required currentUserId,
+    required this.classData, required currentUserId,
   }) : super(key: key);
 
   Future<File> _downloadPDF(String pdfUrl) async {
@@ -29,13 +25,14 @@ class ClassDetailsPage extends StatelessWidget {
     await file.writeAsBytes(response.bodyBytes);
     return file;
   }
+
   Future<void> _assignGrade(BuildContext context, String infoId) async {
     final TextEditingController gradeController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Assign Grade'),
+          title: const Text('Assign Grade'),
           content: TextField(
             controller: gradeController,
             decoration: InputDecoration(labelText: 'Enter Grade'),
@@ -43,16 +40,12 @@ class ClassDetailsPage extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
                 final grade = gradeController.text;
-                print(grade);
-                print(infoId);
                 if (grade.isNotEmpty) {
                   await _updateGrade(infoId, grade);
                   Navigator.pop(context);
@@ -61,7 +54,7 @@ class ClassDetailsPage extends StatelessWidget {
                   );
                 }
               },
-              child: Text('Assign'),
+              child: const Text('Assign'),
             ),
           ],
         );
@@ -76,15 +69,11 @@ class ClassDetailsPage extends StatelessWidget {
           .doc(classId)
           .collection('info')
           .doc(infoId)
-          .update({
-        'grade': grade,
-
-      });
+          .update({'grade': grade});
     } catch (e) {
       print('Failed to update grade: $e');
     }
   }
-
 
   void _openPDF(BuildContext context, String pdfUrl) async {
     try {
@@ -103,46 +92,43 @@ class ClassDetailsPage extends StatelessWidget {
   }
 
   Future<void> _deleteInfo(BuildContext context, String infoId) async {
-    final currentUserRole = await _getCurrentUserRole();
-     try {
-        await FirebaseFirestore.instance
-            .collection('classes')
-            .doc(classId)
-            .collection('info')
-            .doc(infoId)
-            .delete();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Information deleted successfully')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete information: $e')),
-        );
-      }
-
+    try {
+      await FirebaseFirestore.instance
+          .collection('classes')
+          .doc(classId)
+          .collection('info')
+          .doc(infoId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Information deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete information: $e')),
+      );
+    }
   }
 
   Future<void> _deleteClass(BuildContext context) async {
-    final currentUserRole = await _getCurrentUserRole();
-      try {
-        await FirebaseFirestore.instance
-            .collection('classes')
-            .doc(classId)
-            .delete();
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Class deleted successfully')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete class: $e')),
-        );
-      }
+    try {
+      await FirebaseFirestore.instance.collection('classes').doc(classId).delete();
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Class deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete class: $e')),
+      );
+    }
   }
 
   Future<String> _getCurrentUserRole() async {
     try {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
       return userDoc['role'] as String;
     } catch (e) {
       print('Error fetching user role: $e');
@@ -166,7 +152,9 @@ class ClassDetailsPage extends StatelessWidget {
   void _goToClassInfoPage(BuildContext context, DocumentSnapshot infoData) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ClassInfoPage(infoData: infoData, userId: classData['userId'])),
+      MaterialPageRoute(
+        builder: (context) => ClassInfoPage(infoData: infoData, userId: classData['userId']),
+      ),
     );
   }
 
@@ -177,7 +165,7 @@ class ClassDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(classData['className']),
-        backgroundColor: Colors.blueGrey[500],
+        backgroundColor: Colors.blueGrey[600],
         actions: [
           if (currentUserId == classCreatorId) ...[
             IconButton(
@@ -185,7 +173,7 @@ class ClassDetailsPage extends StatelessWidget {
               onPressed: () => _goToUploadInfoPage(context),
             ),
             IconButton(
-              icon: Icon(Icons.delete_forever),
+              icon: const Icon(Icons.delete_forever),
               onPressed: () => _deleteClass(context),
             ),
           ]
@@ -198,24 +186,24 @@ class ClassDetailsPage extends StatelessWidget {
           children: [
             Text(
               'Class Name: ${classData['className']}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.blueGrey),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Text(
               'Subject: ${classData['subject']}',
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 20, color: Colors.blueGrey),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Text(
               'Class Code: ${classData['classCode']}',
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 20, color: Colors.blueGrey),
             ),
             const SizedBox(height: 16),
             const Text(
               'Uploaded Information:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height:16),
+            const SizedBox(height: 16),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -248,31 +236,31 @@ class ClassDetailsPage extends StatelessWidget {
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         color: Colors.blueGrey[50],
-                        elevation: 3,
+                        elevation: 4,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: InkWell(
                           onTap: () => _goToClassInfoPage(context, info),
                           child: Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   info['title'],
-                                  style: TextStyle(
-                                    fontSize: 20,
+                                  style: const TextStyle(
+                                    fontSize: 22,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blueGrey[800],
+                                    color: Colors.blueGrey,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   info['description'],
-                                  style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
+                                  style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 12),
                                 if (pdfUrl != null && pdfUrl.isNotEmpty)
                                   ElevatedButton.icon(
                                     onPressed: () => _openPDF(context, pdfUrl),
@@ -280,6 +268,7 @@ class ClassDetailsPage extends StatelessWidget {
                                     label: const Text('Open PDF'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blueGrey[200],
+                                      padding: const EdgeInsets.symmetric(horizontal: 12),
                                     ),
                                   ),
                                 if (submittedPdf != null && submittedPdf.isNotEmpty)
@@ -289,26 +278,25 @@ class ClassDetailsPage extends StatelessWidget {
                                     label: const Text('View Submitted PDF'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blueGrey[200],
+                                      padding: const EdgeInsets.symmetric(horizontal: 12),
                                     ),
                                   ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Row(
+                                const SizedBox(height: 12),
+                                if (currentUserId == classCreatorId)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        'Uploaded on: ${(info['createdAt'] as Timestamp).toDate()}',
-                                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                      ElevatedButton(
+                                        onPressed: () => _assignGrade(context, infoId),
+                                        child: const Text('Assign Grade'),
                                       ),
-                                      if (currentUserId == classCreatorId)
-                                        Row(
-                                          children: [
-                                            IconButton(onPressed: ()=>_deleteInfo(context,infoId),icon: const Icon(Icons.delete,color: Colors.red)),
-                                            IconButton(onPressed: ()=>_assignGrade(context,infoId), icon: Icon(Icons.grade,color: Colors.green))
-                                          ],
-                                        )
+                                      IconButton(
+                                        icon: const Icon(Icons.delete),
+                                        onPressed: () => _deleteInfo(context, infoId),
+                                        color: Colors.red,
+                                      ),
                                     ],
                                   ),
-                                ),
                               ],
                             ),
                           ),
