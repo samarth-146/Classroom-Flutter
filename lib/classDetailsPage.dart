@@ -7,6 +7,7 @@ import 'package:classroom/UploadInfoPage.dart';
 import 'package:classroom/ClassInfo.dart';
 import 'pdf_viewer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'grade_service.dart';
 
 class ClassDetailsPage extends StatelessWidget {
   final String classId;
@@ -25,6 +26,9 @@ class ClassDetailsPage extends StatelessWidget {
     await file.writeAsBytes(response.bodyBytes);
     return file;
   }
+  // Inside ClassDetailsPage class
+
+
 
   void _openPDF(BuildContext context, String pdfUrl) async {
     try {
@@ -117,11 +121,11 @@ class ClassDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(classData['className']),
-        backgroundColor: Colors.blueGrey[400],
+        backgroundColor: Colors.blueGrey[500],
         actions: [
           if (currentUserId == classCreatorId) ...[
             IconButton(
-              icon: Icon(Icons.upload_file),
+              icon: const Icon(Icons.add),
               onPressed: () => _goToUploadInfoPage(context),
             ),
             IconButton(
@@ -155,6 +159,7 @@ class ClassDetailsPage extends StatelessWidget {
               'Uploaded Information:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height:16),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance

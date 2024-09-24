@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'createClass.dart';
 import 'joinClassroomPage.dart';
 import 'signin.dart';
-import 'register.dart';
 import 'classDetailsPage.dart';
-import 'package:classroom/ClassInfo.dart';
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -18,10 +16,8 @@ class UserClassesPage extends StatefulWidget {
 class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  late TabController _tabController;//used for controller tab between created class and joined class
+  late TabController _tabController; // Controller for tabs
 
-
-  // array of distinct color for card colors
   final List<Color> cardColors = [
     Colors.purple.shade100,
     Colors.lime.shade200,
@@ -60,19 +56,9 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
     );
   }
 
-  void _navigateToRegisterPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
-    );
-  }
-
-  //if we remove the class or add the class then Stream detect all the changes and rebuid the UI
-  //QuerySnapshot represents the result of a query made to Firestore
   Widget _buildClassList(Stream<QuerySnapshot> classStream) {
     return StreamBuilder<QuerySnapshot>(
       stream: classStream,
-      //snapshot use-->the stream is still waiting for data, has data, or encountered an error
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -88,7 +74,6 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
 
         final classes = snapshot.data!.docs;
 
-        //ListView.builder in Flutter is a constructor used to build a scrollable list of widgets
         return ListView.builder(
           itemCount: classes.length,
           itemBuilder: (context, index) {
@@ -98,35 +83,31 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
             final assignedColor = cardColors[index % cardColors.length];
 
             return GestureDetector(
-
-              //onTap,onDoubleTap,onLongPress,onPanUpdate,onTapDown....
               onTap: () {
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-
                     builder: (context) => ClassDetailsPage(
-                      classId: classData.id, // Pass the class ID
+                      classId: classData.id,
                       classData: classData,
-                      currentUserId: data['id'], // Pass the class data,  // Pass the class data
+                      currentUserId: data['id'],
                     ),
                   ),
                 );
               },
               child: Card(
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                elevation: 8,
+                margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                elevation: 6,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: assignedColor, // Use the assigned color for the card
+                    color: assignedColor,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(18.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -135,10 +116,10 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                           style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.black87,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Text(
                           'Subject: ${classData['subject']}',
                           style: const TextStyle(
@@ -146,7 +127,7 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                             color: Colors.black54,
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
                         Text(
                           'Class Code: ${classData['classCode']}',
                           style: const TextStyle(
@@ -155,12 +136,12 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                             fontStyle: FontStyle.italic,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Text(
                           'Created at: ${classData['createdAt'] != null ? (classData['createdAt'] as Timestamp).toDate().toString() : 'N/A'}',
                           style: const TextStyle(
                             fontSize: 14,
-                            color: Colors.black54,
+                            color: Colors.black45,
                           ),
                         ),
                       ],
@@ -180,11 +161,11 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Classes'),
-        backgroundColor: Colors.blueGrey[400],
-        elevation: 0,
+        backgroundColor: Colors.blueGrey[500],
+        elevation: 4,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_box_rounded),
+            icon: const Icon(Icons.add),
             onPressed: _navigateToJoinClassPage,
             tooltip: 'Join Classroom',
           ),
@@ -193,24 +174,20 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
               if (value == 'logout') {
                 _logout();
               }
-              // else if (value == 'register') {
-              //   _navigateToRegisterPage();
-              // }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
                 value: 'logout',
                 child: Text('Logout'),
               ),
-              // const PopupMenuItem(
-              //   value: 'register',
-              //   child: Text('Register'),
-              // ),
             ],
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey.shade300,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: "Created Classes"),
             Tab(text: "Joined Classes"),
@@ -220,7 +197,6 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Created Classes Tab
           _buildClassList(
             _firestore
                 .collection('classes')
@@ -228,11 +204,10 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                 .orderBy('createdAt', descending: true)
                 .snapshots(),
           ),
-          // Joined Classes Tab
           _buildClassList(
             _firestore
                 .collection('classes')
-                .where('joinedUser', arrayContains: _auth.currentUser!.uid) // Using 'joinedUser' field
+                .where('joinedUser', arrayContains: _auth.currentUser!.uid)
                 .orderBy('createdAt', descending: true)
                 .snapshots(),
           ),
@@ -240,8 +215,9 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToCreateClassPage,
-        backgroundColor: Colors.green.shade400,
-        child: const Icon(Icons.create_outlined),
+        backgroundColor: Colors.green.shade500,
+        elevation: 8,
+        child: const Icon(Icons.create),
       ),
     );
   }

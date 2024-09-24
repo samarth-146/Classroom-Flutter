@@ -29,7 +29,10 @@ class _SignInPageState extends State<SignInPage> {
     } catch (e) {
       print('Sign In Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign in: $e')),
+        SnackBar(
+          content: Text('Failed to sign in: ${e.toString()}'),
+          backgroundColor: Colors.redAccent,
+        ),
       );
     }
   }
@@ -39,17 +42,16 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign In'),
-        backgroundColor: Colors.blueGrey[400],
+        backgroundColor: Colors.blueGrey[700],
       ),
-      body: Container(
-        color: Colors.black12,
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 170.0),
-          children: [
-            Center(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Center(
               child: Card(
-                color: Colors.blueGrey.shade200,
-                elevation: 4,
+                color: Colors.white,
+                elevation: 6,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -61,7 +63,7 @@ class _SignInPageState extends State<SignInPage> {
                       const Text(
                         'Sign In',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -69,16 +71,17 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(height: 20),
                       TextField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             borderSide: BorderSide(color: Colors.deepPurple),
                           ),
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             borderSide: BorderSide(color: Colors.black),
                           ),
@@ -87,16 +90,17 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(height: 20),
                       TextField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Password',
+                          prefixIcon: const Icon(Icons.lock),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             borderSide: BorderSide(color: Colors.deepPurple),
                           ),
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(30)),
                             borderSide: BorderSide(color: Colors.black),
                           ),
@@ -107,12 +111,17 @@ class _SignInPageState extends State<SignInPage> {
                       ElevatedButton(
                         onPressed: _signIn,
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.black,
-                          padding: const EdgeInsets.all(10),
-                          textStyle: const TextStyle(fontSize: 18),
+                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 5,
+                          backgroundColor: Colors.blueGrey[200],
                         ),
-                        child: const Text('Sign In'),
+                        child:const Text(
+                          'Sign In',
+                          style: TextStyle(fontSize: 18),
+                        )
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -128,7 +137,7 @@ class _SignInPageState extends State<SignInPage> {
                             },
                             child: const Text(
                               'Register here',
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(color: Colors.deepPurple),
                             ),
                           ),
                         ],
@@ -138,7 +147,7 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
