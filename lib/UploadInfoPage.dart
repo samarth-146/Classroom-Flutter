@@ -23,7 +23,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf','zip'],
+        allowedExtensions: ['pdf', 'zip'],
       );
 
       if (result != null && result.files.isNotEmpty) {
@@ -81,7 +81,6 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
         'pdfUrl': pdfUrl, // Save the URL of the uploaded PDF if available
       };
 
-
       // Store the info in Firestore
       await FirebaseFirestore.instance
           .collection('classes')
@@ -102,41 +101,99 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Information'),
+        title: Center(
+          child: const Text('Upload Information',
+              style: TextStyle(color: Colors.white, fontSize: 24)),
+        ),
         backgroundColor: Colors.blueGrey[400],
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Change the back button color to white
+        ),
       ),
-      body: SingleChildScrollView(  // Wrap the Column in a scrollable view
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-              maxLines: 5,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _pickFile,
-              icon: const Icon(Icons.attach_file),
-              label: const Text('Attach PDF (optional)'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey,
+            const Text(
+              'Upload Class Information',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey,
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _uploadInfo,
-              child: const Text('Upload Info'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey[400],
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: descriptionController,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: _pickFile,
+                    icon: const Icon(
+                      Icons.attach_file,
+                      color: Colors.white,
+                    ),
+                    label: const Text('Attach PDF (optional)'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey[700],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _uploadInfo,
+                    child: const Text('Upload Info'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey[400],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

@@ -67,9 +67,14 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Join Classroom'),
+        title: Center(
+            child: const Text('Join Classroom',
+                style: TextStyle(color: Colors.white))),
         backgroundColor: Colors.blueGrey[500],
         elevation: 0,
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Icon color
+        ),
       ),
       body: Container(
         width: double.infinity,
@@ -92,7 +97,7 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.blueGrey,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -101,7 +106,7 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
                       controller: _classCodeController,
                       decoration: InputDecoration(
                         labelText: 'Class Code',
-                        labelStyle: const TextStyle(color: Colors.deepPurple),
+                        labelStyle: const TextStyle(color: Colors.blueGrey),
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -120,8 +125,9 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
                       onPressed: _joinClass,
-                      icon: const Icon(Icons.class_),
-                      label: const Text('Join Class'),
+                      icon: const Icon(Icons.class_, color: Colors.blueGrey),
+                      label: const Text('Join Class',
+                          style: TextStyle(color: Colors.blueGrey)),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15.0,

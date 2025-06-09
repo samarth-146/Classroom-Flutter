@@ -40,16 +40,13 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In'),
-        backgroundColor: Colors.blueGrey[700],
-      ),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Center(
               child: Card(
+                shadowColor: Colors.blueGrey[200],
                 color: Colors.white,
                 elevation: 6,
                 shape: RoundedRectangleBorder(
@@ -109,20 +106,20 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: _signIn,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                          onPressed: _signIn,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 5,
+                            backgroundColor: Colors.blueGrey[200],
                           ),
-                          elevation: 5,
-                          backgroundColor: Colors.blueGrey[200],
-                        ),
-                        child:const Text(
-                          'Sign In',
-                          style: TextStyle(fontSize: 18),
-                        )
-                      ),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(fontSize: 18),
+                          )),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -132,7 +129,8 @@ class _SignInPageState extends State<SignInPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const RegisterPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => const RegisterPage()),
                               );
                             },
                             child: const Text(

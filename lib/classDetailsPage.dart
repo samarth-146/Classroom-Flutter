@@ -15,7 +15,8 @@ class ClassDetailsPage extends StatelessWidget {
   const ClassDetailsPage({
     Key? key,
     required this.classId,
-    required this.classData, required currentUserId,
+    required this.classData,
+    required currentUserId,
   }) : super(key: key);
 
   Future<File> _downloadPDF(String pdfUrl) async {
@@ -111,7 +112,10 @@ class ClassDetailsPage extends StatelessWidget {
 
   Future<void> _deleteClass(BuildContext context) async {
     try {
-      await FirebaseFirestore.instance.collection('classes').doc(classId).delete();
+      await FirebaseFirestore.instance
+          .collection('classes')
+          .doc(classId)
+          .delete();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Class deleted successfully')),
@@ -153,7 +157,8 @@ class ClassDetailsPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ClassInfoPage(infoData: infoData, userId: classData['userId']),
+        builder: (context) =>
+            ClassInfoPage(infoData: infoData, userId: classData['userId']),
       ),
     );
   }
@@ -164,20 +169,23 @@ class ClassDetailsPage extends StatelessWidget {
     final classCreatorId = classData['userId'];
     return Scaffold(
       appBar: AppBar(
-        title: Text(classData['className']),
+        title: Center(
+            child: Text(classData['className'],
+                style: const TextStyle(fontSize: 24, color: Colors.white))),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey[600],
-        actions: [
-          if (currentUserId == classCreatorId) ...[
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () => _goToUploadInfoPage(context),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_forever),
-              onPressed: () => _deleteClass(context),
-            ),
-          ]
-        ],
+        // actions: [
+        //   if (currentUserId == classCreatorId) ...[
+        //     IconButton(
+        //       icon: const Icon(Icons.add),
+        //       onPressed: () => _goToUploadInfoPage(context),
+        //     ),
+        //     IconButton(
+        //       icon: const Icon(Icons.delete_forever),
+        //       onPressed: () => _deleteClass(context),
+        //     ),
+        //   ]
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -186,22 +194,27 @@ class ClassDetailsPage extends StatelessWidget {
           children: [
             Text(
               'Class Name: ${classData['className']}',
-              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey),
             ),
             const SizedBox(height: 8),
             Text(
               'Subject: ${classData['subject']}',
-              style: const TextStyle(fontSize: 20, color: Colors.blueGrey),
+              style: const TextStyle(fontSize: 22, color: Colors.blueGrey),
             ),
             const SizedBox(height: 8),
             Text(
               'Class Code: ${classData['classCode']}',
-              style: const TextStyle(fontSize: 20, color: Colors.blueGrey),
+              style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Uploaded Information:',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            const SizedBox(height: 30),
+            Center(
+              child: const Text(
+                'Uploaded Information:',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -220,17 +233,24 @@ class ClassDetailsPage extends StatelessWidget {
                   final infoDocs = snapshot.data!.docs;
 
                   if (infoDocs.isEmpty) {
-                    return const Center(child: Text('No information uploaded yet.'));
+                    return const Center(
+                        child: Text('No information uploaded yet.'));
                   }
 
                   return ListView.builder(
                     itemCount: infoDocs.length,
                     itemBuilder: (context, index) {
                       final info = infoDocs[index];
-                      final Map<String, dynamic>? data = info.data() as Map<String, dynamic>?;
+                      final Map<String, dynamic>? data =
+                          info.data() as Map<String, dynamic>?;
 
-                      final pdfUrl = data != null && data.containsKey('pdfUrl') ? data['pdfUrl'] as String? : null;
-                      final submittedPdf = data != null && data.containsKey('submittedPdf') ? data['submittedPdf'] as String? : null;
+                      final pdfUrl = data != null && data.containsKey('pdfUrl')
+                          ? data['pdfUrl'] as String?
+                          : null;
+                      final submittedPdf =
+                          data != null && data.containsKey('submittedPdf')
+                              ? data['submittedPdf'] as String?
+                              : null;
                       final infoId = info.id;
 
                       return Card(
@@ -258,7 +278,8 @@ class ClassDetailsPage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Text(
                                   info['description'],
-                                  style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
+                                  style: const TextStyle(
+                                      fontSize: 16, color: Colors.blueGrey),
                                 ),
                                 const SizedBox(height: 12),
                                 if (pdfUrl != null && pdfUrl.isNotEmpty)
@@ -268,31 +289,38 @@ class ClassDetailsPage extends StatelessWidget {
                                     label: const Text('Open PDF'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blueGrey[200],
-                                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
                                     ),
                                   ),
-                                if (submittedPdf != null && submittedPdf.isNotEmpty)
+                                if (submittedPdf != null &&
+                                    submittedPdf.isNotEmpty)
                                   ElevatedButton.icon(
-                                    onPressed: () => _openPDF(context, submittedPdf),
+                                    onPressed: () =>
+                                        _openPDF(context, submittedPdf),
                                     icon: const Icon(Icons.picture_as_pdf),
                                     label: const Text('View Submitted PDF'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.blueGrey[200],
-                                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
                                     ),
                                   ),
                                 const SizedBox(height: 12),
                                 if (currentUserId == classCreatorId)
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       ElevatedButton(
-                                        onPressed: () => _assignGrade(context, infoId),
+                                        onPressed: () =>
+                                            _assignGrade(context, infoId),
                                         child: const Text('Assign Grade'),
                                       ),
                                       IconButton(
                                         icon: const Icon(Icons.delete),
-                                        onPressed: () => _deleteInfo(context, infoId),
+                                        onPressed: () =>
+                                            _deleteInfo(context, infoId),
                                         color: Colors.red,
                                       ),
                                     ],
@@ -310,6 +338,35 @@ class ClassDetailsPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'btn1', // Required when using multiple FABs
+            onPressed: () => _goToUploadInfoPage(context),
+            tooltip: 'Add Information',
+            backgroundColor: Colors.blueGrey[600],
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 12), // Space between buttons
+          FloatingActionButton(
+            heroTag: 'btn2', // Unique heroTag for second FAB
+            onPressed: () => _deleteClass(context),
+            tooltip: 'Delete Class',
+            backgroundColor: Colors.white,
+            child: const Icon(
+              Icons.delete_forever,
+              color: Colors.blueGrey,
+            ),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.endFloat, // ⬅ bottom-right
     );
   }
 }

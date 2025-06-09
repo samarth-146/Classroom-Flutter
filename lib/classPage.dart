@@ -1,3 +1,4 @@
+import 'package:classroom/bottomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'createClass.dart';
 import 'joinClassroomPage.dart';
 import 'signin.dart';
 import 'classDetailsPage.dart';
+import 'bottomNavigation.dart';
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -13,7 +15,8 @@ class UserClassesPage extends StatefulWidget {
   _UserClassesPageState createState() => _UserClassesPageState();
 }
 
-class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProviderStateMixin {
+class _UserClassesPageState extends State<UserClassesPage>
+    with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late TabController _tabController; // Controller for tabs
@@ -52,9 +55,11 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const SignInPage()),
-          (route) => false,
+      (route) => false,
     );
   }
+
+  int _selectedIndex = 0;
 
   Widget _buildClassList(Stream<QuerySnapshot> classStream) {
     return StreamBuilder<QuerySnapshot>(
@@ -79,7 +84,8 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
           itemBuilder: (context, index) {
             final classData = classes[index];
             final data = classData.data() as Map<String, dynamic>;
-            final currentUserId = data.containsKey('userId') ? data['userId'] : null;
+            final currentUserId =
+                data.containsKey('userId') ? data['userId'] : null;
             final assignedColor = cardColors[index % cardColors.length];
 
             return GestureDetector(
@@ -96,7 +102,8 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
                 );
               },
               child: Card(
-                margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                margin:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 elevation: 6,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -160,29 +167,26 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Classes'),
+        title: Center(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
+                  child: Image.asset(
+                    '../assets/images/logo.png',
+                    // height: 40,
+                    width: 140,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(
+                    width: 10), // spacing between image and text          ],
+              ]),
+        ),
         backgroundColor: Colors.blueGrey[500],
         elevation: 4,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _navigateToJoinClassPage,
-            tooltip: 'Join Classroom',
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'logout') {
-                _logout();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Text('Logout'),
-              ),
-            ],
-          ),
-        ],
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
@@ -213,12 +217,13 @@ class _UserClassesPageState extends State<UserClassesPage> with SingleTickerProv
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToCreateClassPage,
-        backgroundColor: Colors.green.shade500,
-        elevation: 8,
-        child: const Icon(Icons.create),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _navigateToCreateClassPage,
+      //   backgroundColor: Colors.green.shade500,
+      //   elevation: 8,
+      //   child: const Icon(Icons.create),
+      // ),
+      bottomNavigationBar: bottomNavigation(),
     );
   }
 }

@@ -61,7 +61,12 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Class'),
+        title: Center(
+            child: Text(
+          'Create Class',
+          style: TextStyle(color: Colors.white, fontSize: 24),
+        )),
+        iconTheme: IconThemeData(color: Colors.white), // Icon color
         backgroundColor: Colors.blueGrey[700], // Unified color scheme
         elevation: 0,
       ),
@@ -92,7 +97,8 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.blueGrey, width: 1.5),
+                        borderSide:
+                            BorderSide(color: Colors.blueGrey, width: 1.5),
                       ),
                     ),
                   ),
@@ -110,23 +116,28 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.blueGrey, width: 1.5),
+                        borderSide:
+                            BorderSide(color: Colors.blueGrey, width: 1.5),
                       ),
                     ),
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: _createClass,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey[200],
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      onPressed: _createClass,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey[200],
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        textStyle: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
                       ),
-                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    child: const Text('Create Class'),
-                  ),
+                      child: const Text(
+                        'Create Class',
+                        style: TextStyle(color: Colors.blueGrey),
+                      )),
                 ],
               ),
             ),
