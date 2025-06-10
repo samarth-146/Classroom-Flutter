@@ -163,6 +163,27 @@ class ClassDetailsPage extends StatelessWidget {
     );
   }
 
+  void _leaveClass(BuildContext context) async {
+    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      await FirebaseFirestore.instance
+          .collection('classes')
+          .doc(classId)
+          .update({
+        'joinedUser': FieldValue.arrayRemove([currentUserId])
+      });
+
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You have left the class')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to leave class: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -278,6 +299,8 @@ class ClassDetailsPage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 Text(
                                   info['description'],
+                                  maxLines: 7,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.blueGrey),
                                 ),
@@ -338,33 +361,43 @@ class ClassDetailsPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'btn1', // Required when using multiple FABs
-            onPressed: () => _goToUploadInfoPage(context),
-            tooltip: 'Add Information',
-            backgroundColor: Colors.blueGrey[600],
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12), // Space between buttons
-          FloatingActionButton(
-            heroTag: 'btn2', // Unique heroTag for second FAB
-            onPressed: () => _deleteClass(context),
-            tooltip: 'Delete Class',
-            backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.delete_forever,
-              color: Colors.blueGrey,
-            ),
-          ),
-        ],
-      ),
+      floatingActionButton: currentUserId == classCreatorId
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'btn1',
+                  onPressed: () => _goToUploadInfoPage(context),
+                  tooltip: 'Add Information',
+                  backgroundColor: Colors.blueGrey[600],
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton(
+                  heroTag: 'btn2',
+                  onPressed: () => _deleteClass(context),
+                  tooltip: 'Delete Class',
+                  backgroundColor: Colors.white,
+                  child: const Icon(
+                    Icons.delete_forever,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+              ],
+            )
+          : FloatingActionButton(
+              onPressed: () => _leaveClass(context),
+              tooltip: 'Leave Class',
+              backgroundColor: Colors.white,
+              child: const Icon(
+                Icons.exit_to_app,
+                color: Colors.redAccent,
+              ),
+            ), // No FABs shown for joined users
       floatingActionButtonLocation:
           FloatingActionButtonLocation.endFloat, // ⬅ bottom-right
     );
