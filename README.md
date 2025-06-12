@@ -21,6 +21,7 @@ A Flutter application that allows users to **create, join classroom **. It suppo
 
 > Add screenshots of the main pages like:
 
+
 - ✅ Login/Register Page
 
 ![alt text](<Screenshot 2025-06-11 184437.png>)
@@ -28,20 +29,22 @@ A Flutter application that allows users to **create, join classroom **. It suppo
 
 
 - 🏠 Dashboard with Class Cards
+  
 - ![Screenshot 2025-06-12 161347](https://github.com/user-attachments/assets/4e7d08bc-e531-4dcc-bcb9-0799a3452b29)
 
 
-
 - ➕ Create or Join Class
-![alt text](<Screenshot 2025-06-11 184833.png>) 
-![alt text](<Screenshot 2025-06-11 185725.png>)
+ 
+-![alt text](<Screenshot 2025-06-11 184833.png>) 
+-![alt text](<Screenshot 2025-06-11 185725.png>)
+
 
 - 📄 Class Details with Uploaded PDFs
 
-![alt text](<Screenshot 2025-06-11 184708.png>)
-![alt text](<Screenshot 2025-06-12 161245.png>)
-![alt text](<Screenshot 2025-06-11 184806.png>)
-![alt text](<Screenshot 2025-06-12 161547.png>)
+-![alt text](<Screenshot 2025-06-11 184708.png>)
+-![alt text](<Screenshot 2025-06-12 161245.png>)
+-![alt text](<Screenshot 2025-06-11 184806.png>)
+-![alt text](<Screenshot 2025-06-12 161547.png>)
 
 
 - Joined Users list page
