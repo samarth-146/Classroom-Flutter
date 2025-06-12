@@ -28,9 +28,8 @@ A Flutter application that allows users to **create, join classroom **. It suppo
 
 
 - 🏠 Dashboard with Class Cards
+- ![Screenshot 2025-06-12 161347](https://github.com/user-attachments/assets/4e7d08bc-e531-4dcc-bcb9-0799a3452b29)
 
-![alt text](<Screenshot 2025-06-11 184437-1.png>) 
-![alt text](<Screenshot 2025-06-11 184457-1.png>)
 
 
 - ➕ Create or Join Class
