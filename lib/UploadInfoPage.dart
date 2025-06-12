@@ -7,7 +7,7 @@ import 'package:file_picker/file_picker.dart';
 class UploadInfoPage extends StatefulWidget {
   final String classId;
 
-  const UploadInfoPage({Key? key, required this.classId}) : super(key: key);
+  const UploadInfoPage({super.key, required this.classId});
 
   @override
   _UploadInfoPageState createState() => _UploadInfoPageState();
@@ -101,8 +101,8 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: const Text('Upload Information',
+        title: const Center(
+          child: Text('Upload Information',
               style: TextStyle(color: Colors.white, fontSize: 24)),
         ),
         backgroundColor: Colors.blueGrey[400],
@@ -182,7 +182,6 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _uploadInfo,
-                    child: const Text('Upload Info'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueGrey[400],
                       foregroundColor: Colors.white,
@@ -192,6 +191,7 @@ class _UploadInfoPageState extends State<UploadInfoPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
+                    child: const Text('Upload Info'),
                   ),
                 ],
               ),

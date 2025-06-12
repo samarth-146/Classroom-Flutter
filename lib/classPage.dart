@@ -6,7 +6,6 @@ import 'createClass.dart';
 import 'joinClassroomPage.dart';
 import 'signin.dart';
 import 'classDetailsPage.dart';
-import 'bottomNavigation.dart';
 
 class UserClassesPage extends StatefulWidget {
   const UserClassesPage({super.key});
@@ -59,7 +58,7 @@ class _UserClassesPageState extends State<UserClassesPage>
     );
   }
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
 
   Widget _buildClassList(Stream<QuerySnapshot> classStream) {
     return StreamBuilder<QuerySnapshot>(
@@ -223,7 +222,7 @@ class _UserClassesPageState extends State<UserClassesPage>
       //   elevation: 8,
       //   child: const Icon(Icons.create),
       // ),
-      bottomNavigationBar: bottomNavigation(),
+      bottomNavigationBar: const bottomNavigation(),
     );
   }
 }

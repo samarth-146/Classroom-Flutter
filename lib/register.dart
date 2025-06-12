@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => UserClassesPage()),
+        MaterialPageRoute(builder: (context) => const UserClassesPage()),
       );
     } catch (e) {
       print('Registration Error: $e');

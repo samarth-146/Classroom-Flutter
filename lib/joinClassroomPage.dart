@@ -67,8 +67,8 @@ class _JoinClassroomPageState extends State<JoinClassroomPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child: const Text('Join Classroom',
+        title: const Center(
+            child: Text('Join Classroom',
                 style: TextStyle(color: Colors.white))),
         backgroundColor: Colors.blueGrey[500],
         elevation: 0,

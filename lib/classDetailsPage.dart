@@ -7,17 +7,18 @@ import 'package:classroom/UploadInfoPage.dart';
 import 'package:classroom/ClassInfo.dart';
 import 'pdf_viewer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:classroom/JoinedUsersPage.dart';
 
 class ClassDetailsPage extends StatelessWidget {
   final String classId;
   final DocumentSnapshot classData;
 
   const ClassDetailsPage({
-    Key? key,
+    super.key,
     required this.classId,
     required this.classData,
     required currentUserId,
-  }) : super(key: key);
+  });
 
   Future<File> _downloadPDF(String pdfUrl) async {
     final response = await http.get(Uri.parse(pdfUrl));
@@ -36,7 +37,7 @@ class ClassDetailsPage extends StatelessWidget {
           title: const Text('Assign Grade'),
           content: TextField(
             controller: gradeController,
-            decoration: InputDecoration(labelText: 'Enter Grade'),
+            decoration: const InputDecoration(labelText: 'Enter Grade'),
             keyboardType: TextInputType.number,
           ),
           actions: [
@@ -51,7 +52,7 @@ class ClassDetailsPage extends StatelessWidget {
                   await _updateGrade(infoId, grade);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Grade assigned successfully')),
+                    const SnackBar(content: Text('Grade assigned successfully')),
                   );
                 }
               },
@@ -162,6 +163,15 @@ class ClassDetailsPage extends StatelessWidget {
       ),
     );
   }
+  void _SeeJoinedUsers(BuildContext context) {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => JoinedUsersPage(classId),
+      ),
+    );
+  }
 
   void _leaveClass(BuildContext context) async {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -231,8 +241,8 @@ class ClassDetailsPage extends StatelessWidget {
               style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
             ),
             const SizedBox(height: 30),
-            Center(
-              child: const Text(
+            const Center(
+              child: Text(
                 'Uploaded Information:',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
@@ -387,6 +397,18 @@ class ClassDetailsPage extends StatelessWidget {
                     color: Colors.blueGrey,
                   ),
                 ),
+                const SizedBox(height: 12),
+                FloatingActionButton(
+                  heroTag: 'btn3',
+                  onPressed: () => _SeeJoinedUsers(context),
+                  tooltip: 'Joined Users',
+                  backgroundColor: Colors.white,
+                  child: const Icon(
+                    Icons.people,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+
               ],
             )
           : FloatingActionButton(

@@ -61,12 +61,12 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
             child: Text(
           'Create Class',
           style: TextStyle(color: Colors.white, fontSize: 24),
         )),
-        iconTheme: IconThemeData(color: Colors.white), // Icon color
+        iconTheme: const IconThemeData(color: Colors.white), // Icon color
         backgroundColor: Colors.blueGrey[700], // Unified color scheme
         elevation: 0,
       ),
@@ -98,7 +98,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Colors.blueGrey, width: 1.5),
+                            const BorderSide(color: Colors.blueGrey, width: 1.5),
                       ),
                     ),
                   ),
@@ -117,7 +117,7 @@ class _ClassCreationPageState extends State<ClassCreationPage> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Colors.blueGrey, width: 1.5),
+                            const BorderSide(color: Colors.blueGrey, width: 1.5),
                       ),
                     ),
                   ),

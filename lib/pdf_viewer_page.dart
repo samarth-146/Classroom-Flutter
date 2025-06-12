@@ -4,13 +4,13 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 class PDFViewerPage extends StatelessWidget {
   final String filePath;
 
-  const PDFViewerPage({Key? key, required this.filePath}) : super(key: key);
+  const PDFViewerPage({super.key, required this.filePath});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Viewer'),
+        title: const Text('PDF Viewer'),
         backgroundColor: Colors.blueGrey[400],
       ),
       body: PDFView(

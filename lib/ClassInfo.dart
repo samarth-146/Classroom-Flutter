@@ -13,10 +13,10 @@ class ClassInfoPage extends StatefulWidget {
   final String userId;
 
   const ClassInfoPage({
-    Key? key,
+    super.key,
     required this.infoData,
     required this.userId,
-  }) : super(key: key);
+  });
 
   @override
   _ClassInfoPageState createState() => _ClassInfoPageState();
@@ -119,9 +119,11 @@ class _ClassInfoPageState extends State<ClassInfoPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Class Info',
-          style: TextStyle(color: Colors.white),
+        title: Center(
+          child: const Text(
+            'Class Info',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueGrey[600],
