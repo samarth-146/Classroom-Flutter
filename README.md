@@ -1,16 +1,70 @@
-# classroom
+# 📚 Classroom App
 
-A new Flutter project.
+A Flutter application that allows users to **create, join classroom **. It supports features like user authentication, classroom code sharing, file uploads (like PDFs),  and real-time data updates using **Firebase**.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ✨ Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🔐 Firebase Authentication (Email & Password)
+- 🏫 Create and Join Classes using Class Code
+- 📂 Upload Class Information and Files (PDF)
+- 👥 View Joined Users in Each Class
+- 🗑️ Delete Class and Information (by creator only)
+- 🎨 Distinct Colored Class Cards
+- 📖 PDF Viewer for Uploaded Documents
+- ⚙️ Firebase Firestore for real-time class data
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🖼️ Screenshots
+
+> Add screenshots of the main pages like:
+
+- ✅ Login/Register Page
+
+![alt text](<Screenshot 2025-06-11 184437.png>)
+![alt text](<Screenshot 2025-06-11 184457.png>)
+
+
+- 🏠 Dashboard with Class Cards
+
+![alt text](<Screenshot 2025-06-11 184437-1.png>) 
+![alt text](<Screenshot 2025-06-11 184457-1.png>)
+
+
+- ➕ Create or Join Class
+![alt text](<Screenshot 2025-06-11 184833.png>) 
+![alt text](<Screenshot 2025-06-11 185725.png>)
+
+- 📄 Class Details with Uploaded PDFs
+
+![alt text](<Screenshot 2025-06-11 184708.png>)
+![alt text](<Screenshot 2025-06-12 161245.png>)
+![alt text](<Screenshot 2025-06-11 184806.png>)
+![alt text](<Screenshot 2025-06-12 161547.png>)
+
+
+- Joined Users list page
+
+![alt text](<Screenshot 2025-06-12 160941.png>)
+
+---
+
+## 🚀 Getting Started
+
+### 🔧 Prerequisites
+
+- Flutter SDK (3.x.x)
+- Android Studio or VS Code
+- Firebase Project
+
+### 📦 Installation
+
+1. **Clone this repo:**
+
+```bash
+git clone https://github.com/your-username/classroom-app.git
+cd classroom-app
+flutter pub get
+flutter run
